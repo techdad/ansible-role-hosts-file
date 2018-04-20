@@ -1,0 +1,11 @@
+---
+# tasks file for hosts-file
+
+- name: Write /etc/hosts from template
+  template:
+    src: hosts-file.j2
+    dest: /etc/hosts
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644

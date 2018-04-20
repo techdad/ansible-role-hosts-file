@@ -1,0 +1,14 @@
+#jinja2: lstrip_blocks: "True"
+# Ansible managed hosts file
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+{% for entry in hosts_hosts %}
+  {% if entry.ipv4 |ipv4 %}
+{{'%-26s'|format(entry.ipv4)}} {{entry.name}} {{entry.name}}.{{hostvars[inventory_hostname].ansible_domain}}
+  {% endif %}
+  {% if entry.ipv6 |ipv6 %}
+{{'%-26s'|format(entry.ipv6)}} {{entry.name}} {{entry.name}}.{{hostvars[inventory_hostname].ansible_domain}}
+  {% endif %}
+
+{% endfor %}
