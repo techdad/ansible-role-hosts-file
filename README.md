@@ -1,48 +1,91 @@
-Role Name
-=========
+# Ansible Role: hosts-file
 
-A brief description of the role goes here.
+This is a super simple role with a single task and template to populate an `/etc/hosts` file from the given list variable.
 
-Requirements
-------------
+The use-case is generally for systems like database cluster members, where it's desired that they can intercommunicate by name, even in the event of outside network access (and thus DNS) failure.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should
-be mentioned here. For instance, if the role uses the EC2 module, it may be a
-good idea to mention in this section that the boto package is required.
+Please *do NOT* consider this a way to forego configuring real DNS for an environment!
 
-Role Variables
---------------
+## Role Variables:
 
-A description of the settable variables for this role should go here, including
-any variables that are in defaults/main.yml, vars/main.yml, and any variables
-that can/should be set via parameters to the role. Any variables that are read
-from other roles and/or the global scope (ie. hostvars, group vars, etc.) should
-be mentioned here as well.
+| Parameter     | Default     |
+|---------------|-------------|
+| `hosts_hosts` | `[]` (none) |
 
-Dependencies
-------------
+Populate this with a list of dictionary entries that will be the lines to add to the `/etc/hosts` file, excluding `localhost`.
 
-A list of other roles hosted on Galaxy should go here, plus any details in
-regards to parameters that may need to be set for other roles, or variables that
-are used from other roles.
+If empty, or not set, then *only* the default `localhost` entries are added.
 
-Example Playbook
-----------------
+### Format:
 
-Including an example of how to use your role (for instance, with variables
-passed in as parameters) is always nice for users too:
+```yaml
+hosts_hosts:
+  - name: 
+    ipv4: 
+    ipv6: 
+```
 
-    - hosts: servers
-      roles:
-         - { role: hosts-file, x: 42 }
+### Details:
+
+* Do *not* add in 'localhost' entries. You can, but the are redundant and always added at the top in any case.
+* Always use *short* **hostnames** - the systems default domain is also automatically appended as an additional name.
+* Always have both `ipv4:` and `ipv6:` listed, even if one or the other is empty.
+
+### Working Example:
+
+```yaml
+# hosts file variable
+hosts_hosts:
+  - name: "dualstack"
+    ipv4: "192.0.2.46"
+    ipv6: "2001:db8:192:2::46"
+  - name: "ipv4only"
+    ipv4: "192.0.2.44"
+    ipv6:
+  - name: "ipv6only"
+    ipv4:
+    ipv6: "2001:db8:192:2::66"
+```
+
+... would result in:
+
+```
+# Ansible managed hosts file
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.0.2.46                 dualstack  dualstack.domain.tld
+2001:db8:192:2::46         dualstack  dualstack.domain.tld
+
+192.0.2.44                 ipv4only  ipv4only.domain.tld
+
+2001:db8:192:2::46         ipv6only  ipv6only.domain.tld
+```
+
+
+# Example Playbook
+
+Just specify the role:
+
+```yaml
+---
+- name: hosts-file
+  hosts: all
+  become: True
+
+  ## run role ##
+  roles:
+    - role: hosts-file
+```
+
+(It's preferable to specify the `hosts_hosts` variable in the inventory, host host or group).
 
 License
 -------
 
-BSD
+Apache 2.0
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a
-website (HTML is not allowed).
+Daniel Shaw <daniel@techdad.xyz>
