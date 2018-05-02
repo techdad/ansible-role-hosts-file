@@ -18,5 +18,5 @@ galaxy_info:
      versions:
      - all
   galaxy_tags:
-    - hosts-file
+    - hostsfile
     - os

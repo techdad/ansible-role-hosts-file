@@ -59,7 +59,7 @@ hosts_hosts:
 
 192.0.2.44                 ipv4only  ipv4only.domain.tld
 
-2001:db8:192:2::46         ipv6only  ipv6only.domain.tld
+2001:db8:192:2::66         ipv6only  ipv6only.domain.tld
 ```
 
 
@@ -88,4 +88,4 @@ Apache 2.0
 Author Information
 ------------------
 
-Daniel Shaw <daniel@techdad.xyz>
+Daniel Shaw \<daniel@techdad.xyz\>
