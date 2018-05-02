@@ -7,11 +7,27 @@ driver:
     name: virtualbox
 lint:
   name: yamllint
+  options:
+    config-data: relaxed
+    format: parsable
 platforms:
   - name: instance.local
     box: bento/centos-7.4
 provisioner:
   name: ansible
+  inventory:
+    group_vars:
+      all:
+        hosts_hosts:
+          - name: "dualstack"
+            ipv4: "192.0.2.46"
+            ipv6: "2001:db8:192:2::46"
+          - name: "ipv4only"
+            ipv4: "192.0.2.44"
+            ipv6:
+          - name: "ipv6only"
+            ipv4:
+            ipv6: "2001:db8:192:2::66"
   lint:
     name: ansible-lint
 scenario:
